@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rob Chat</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+<body>
+    <h1>Chat</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="messageInput" autocomplete="off"/>
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const clientId = Math.floor(Math.random() * 10000);
+        const ws = new WebSocket(`redis-10133.c60.us-west-1-2.ec2.redns.redis-cloud.com:10133/${clientId}`);
+
+        ws.onmessage = function(event) {
+            const chatbox = document.getElementById('chatbox');
+            const message = document.createElement('div');
+            message.textContent = event.data;
+            chatbox.appendChild(message);
+        };
+
+        function sendMessage() {
+            const input = document.getElementById("messageInput");
+            ws.send(input.value);
+            input.value = '';
+        }
+    </script>
+</body>
+</html>
